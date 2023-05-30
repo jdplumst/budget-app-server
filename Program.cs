@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors((o) => o.WithOrigins("http://localhost:3000", "https://budget-app-coral.vercel.app/"));
+app.UseCors((o) => o.WithOrigins("http://localhost:3000", "https://budget-app-coral.vercel.app"));
 
 app.UseHttpsRedirection();
 
