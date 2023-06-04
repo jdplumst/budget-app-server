@@ -1,3 +1,8 @@
+using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using BudgetApp.Models;
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,6 +21,9 @@ builder.Services.AddCors();
 
 DotNetEnv.Env.Load();
 
+builder.Services.AddDbContext<BudgetAppContext>(options => options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL")));
+// builder.Services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+
 var app = builder.Build();// Add Cors
 
 // Configure the HTTP request pipeline.
@@ -30,6 +38,9 @@ app.UseCors((o) => o.WithOrigins("http://localhost:3000", "https://budget-app-co
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// app.UseMvc();
+// app.UseEndpoints (endpoints => { endpoints.MapControllers(); });
 
 app.MapControllers();
 
