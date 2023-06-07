@@ -22,6 +22,15 @@ public class AuthController : ControllerBase
     [HttpPost("signup")]
     public ActionResult<User> Signup(UserDto userDto)
     {
+        if (String.IsNullOrWhiteSpace(userDto.Username))
+        {
+            return BadRequest("Must enter a username");
+        }
+        if (String.IsNullOrWhiteSpace(userDto.Password))
+        {
+            return BadRequest("Must enter a password");
+        }
+
         string username = userDto.Username;
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
         var user = new User { Username = username, PasswordHash = passwordHash };
@@ -36,12 +45,12 @@ public class AuthController : ControllerBase
         var user = context.Users.Where(u => u.Username == userDto.Username).FirstOrDefault();
         if (user == null)
         {
-            return BadRequest("User not found.");
+            return BadRequest("User not found");
         }
 
         if (!BCrypt.Net.BCrypt.Verify(userDto.Password, user.PasswordHash))
         {
-            return BadRequest("Incorrect password.");
+            return BadRequest("Incorrect password");
         }
 
         string token = CreateToken(user);
