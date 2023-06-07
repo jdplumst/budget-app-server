@@ -16,7 +16,8 @@ builder.Services.AddCors();
 
 DotNetEnv.Env.Load();
 
-builder.Services.AddDbContext<BudgetAppContext>(options => options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL")));
+builder.Services.AddDbContext<BudgetAppContext>(options =>
+    options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL")));
 
 var app = builder.Build();
 
@@ -27,7 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors((o) => o.WithOrigins("http://localhost:3000", "https://budget-app-coral.vercel.app"));
+app.UseCors((o) => o.WithOrigins("http://localhost:3000", "https://budget-app-coral.vercel.app")
+    .AllowAnyHeader().AllowAnyMethod());
 
 app.UseHttpsRedirection();
 
