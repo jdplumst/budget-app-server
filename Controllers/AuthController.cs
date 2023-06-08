@@ -31,6 +31,14 @@ public class AuthController : ControllerBase
             return BadRequest("Must enter a password");
         }
 
+        // Check if user with that username already exists
+        var exists = context.Users.Where(u => u.Username == userDto.Username).FirstOrDefault();
+        if (exists != null)
+        {
+            return BadRequest("Username already taken");
+        }
+
+
         // Check Passowrd Strength
         if (userDto.Password.Length < 8 || !userDto.Password.Any((p) => char.IsLower(p))
             || !userDto.Password.Any((p) => char.IsUpper(p)) || !userDto.Password.Any((p) => char.IsDigit(p))
