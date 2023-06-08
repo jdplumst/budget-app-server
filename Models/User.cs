@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace BudgetApp.Models
 {
     public class User
@@ -6,12 +8,11 @@ namespace BudgetApp.Models
         public required string Username { get; set; }
         public required string PasswordHash { get; set; }
 
-        public User() { }
-
+        [SetsRequiredMembers]
         public User(string username, string passwordHash)
         {
-            Username = username;
-            PasswordHash = passwordHash;
+            this.Username = username;
+            this.PasswordHash = passwordHash;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace BudgetApp.Models
     {
         public BudgetAppContext(DbContextOptions<BudgetAppContext> options) : base(options)
         { }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Project> Projects { get; set; }
+        public required DbSet<User> Users { get; set; }
+        public required DbSet<Project> Projects { get; set; }
     }
 }

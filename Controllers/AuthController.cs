@@ -31,9 +31,18 @@ public class AuthController : ControllerBase
             return BadRequest("Must enter a password");
         }
 
+        // Check Passowrd Strength
+        if (userDto.Password.Length < 8 || !userDto.Password.Any((p) => char.IsLower(p))
+            || !userDto.Password.Any((p) => char.IsUpper(p)) || !userDto.Password.Any((p) => char.IsDigit(p))
+            || userDto.Password.IndexOfAny("\\|¬¦`!\"£$%^&*()_+-=[]{};:'@#~<>,./?".ToCharArray()) < 0)
+        {
+            return BadRequest(@"Password must contain at least 1 lowercase character, " +
+                "1 uppercase character, 1 digit, 1 special character, and 8 characters total");
+        }
+
         string username = userDto.Username;
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
-        var user = new User { Username = username, PasswordHash = passwordHash };
+        User user = new User(username, passwordHash);
         context.Add<User>(user);
         context.SaveChanges();
         return Ok(user);
@@ -58,13 +67,13 @@ public class AuthController : ControllerBase
         return Ok(token);
     }
 
-    private string CreateToken(User user)
+    private static string CreateToken(User user)
     {
         List<Claim> claims = new List<Claim> {
         new Claim(ClaimTypes.Name, user.Username)
       };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
         var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddDays(1), signingCredentials: credentials);
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
