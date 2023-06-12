@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
         }
 
         // Check if user with that username already exists
-        var exists = context.Users.Where(u => u.Username == userDto.Username).FirstOrDefault();
+        var exists = context.Users.Where(u => u.Username.ToLower() == userDto.Username.ToLower()).FirstOrDefault();
         if (exists != null)
         {
             return BadRequest("Username already taken");
@@ -77,13 +77,22 @@ public class AuthController : ControllerBase
 
     private static string CreateToken(User user)
     {
-        List<Claim> claims = new List<Claim> {
-        new Claim(ClaimTypes.Name, user.Username)
-      };
+        List<Claim> claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Username)
+        };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-        var token = new JwtSecurityToken(claims: claims, expires: DateTime.Now.AddDays(1), signingCredentials: credentials);
+        var token = new JwtSecurityToken(issuer: Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "development"
+            ? Environment.GetEnvironmentVariable("ISSUERS")!.Split(" ")[0]
+            : Environment.GetEnvironmentVariable("ISSUERS")!.Split(" ")[1],
+            audience: Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "development"
+            ? Environment.GetEnvironmentVariable("AUDIENCE")!.Split(" ")[0]
+            : Environment.GetEnvironmentVariable("AUDIENCE")!.Split(" ")[1],
+            claims: claims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: credentials);
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
         return jwt;
     }

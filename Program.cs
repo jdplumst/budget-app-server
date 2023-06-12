@@ -2,6 +2,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using BudgetApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,20 @@ DotNetEnv.Env.Load();
 builder.Services.AddDbContext<BudgetAppContext>(options =>
     options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL")));
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer((o) =>
+{
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuers = Environment.GetEnvironmentVariable("ISSUERS")!.Split(" "),
+        ValidAudiences = Environment.GetEnvironmentVariable("AUDIENCE")!.Split(" "),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!))
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,10 +45,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors((o) => o.WithOrigins("http://localhost:3000", "https://budget-app-coral.vercel.app")
+app.UseCors((o) => o.WithOrigins(Environment.GetEnvironmentVariable("CORS")!.Split(" "))
     .AllowAnyHeader().AllowAnyMethod());
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
