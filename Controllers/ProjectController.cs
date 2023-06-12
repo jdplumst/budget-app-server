@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace budget_app_server.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("[controller]")]
 public class ProjectController : ControllerBase
 {
