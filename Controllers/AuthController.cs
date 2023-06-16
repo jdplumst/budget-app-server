@@ -20,7 +20,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("signup")]
-    public ActionResult<User> Signup(UserDto userDto)
+    public ActionResult<String> Signup(UserDto userDto)
     {
         if (String.IsNullOrWhiteSpace(userDto.Username))
         {
@@ -53,7 +53,8 @@ public class AuthController : ControllerBase
         User user = new User(username, passwordHash);
         context.Add<User>(user);
         context.SaveChanges();
-        return Ok(user);
+        string token = CreateToken(user);
+        return Ok(token);
     }
 
     [HttpPost("login")]
