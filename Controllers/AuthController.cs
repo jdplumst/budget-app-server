@@ -62,7 +62,7 @@ public class AuthController : ControllerBase
             Secure = true,
             HttpOnly = true,
             IsEssential = true,
-            SameSite = SameSiteMode.Lax
+            SameSite = SameSiteMode.None
         });
         return Ok(token);
     }
@@ -98,7 +98,7 @@ public class AuthController : ControllerBase
             Secure = true,
             HttpOnly = true,
             IsEssential = true,
-            SameSite = SameSiteMode.Lax
+            SameSite = SameSiteMode.None
         });
         return Ok(token);
     }
