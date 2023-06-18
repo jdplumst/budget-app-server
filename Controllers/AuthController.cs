@@ -62,7 +62,9 @@ public class AuthController : ControllerBase
             Secure = true,
             HttpOnly = true,
             IsEssential = true,
-            SameSite = SameSiteMode.None
+            SameSite = SameSiteMode.None,
+            Domain = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "development"
+                ? null : Environment.GetEnvironmentVariable("DOMAIN")
         });
         return Ok(token);
     }
@@ -98,7 +100,9 @@ public class AuthController : ControllerBase
             Secure = true,
             HttpOnly = true,
             IsEssential = true,
-            SameSite = SameSiteMode.None
+            SameSite = SameSiteMode.None,
+            Domain = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "development"
+                ? null : Environment.GetEnvironmentVariable("DOMAIN")
         });
         return Ok(token);
     }
