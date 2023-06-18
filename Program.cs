@@ -34,6 +34,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudiences = Environment.GetEnvironmentVariable("AUDIENCE")!.Split(" "),
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!))
     };
+    o.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["ba_session"];
+            return Task.CompletedTask;
+        }
+    };
 });
 
 var app = builder.Build();
@@ -46,7 +54,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors((o) => o.WithOrigins(Environment.GetEnvironmentVariable("CORS")!.Split(" "))
-    .AllowAnyHeader().AllowAnyMethod());
+    .AllowAnyHeader().AllowAnyMethod().AllowCredentials());
 
 app.UseHttpsRedirection();
 

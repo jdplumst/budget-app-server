@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using System.Web;
 
 namespace budget_app_server.Controllers;
 
@@ -55,6 +56,14 @@ public class AuthController : ControllerBase
         context.Add<User>(user);
         context.SaveChanges();
         string token = CreateToken(user);
+        HttpContext.Response.Cookies.Append("ba_session", token, new CookieOptions
+        {
+            Expires = DateTime.Now.AddDays(1),
+            Secure = true,
+            HttpOnly = true,
+            IsEssential = true,
+            SameSite = SameSiteMode.Lax
+        });
         return Ok(token);
     }
 
@@ -83,7 +92,14 @@ public class AuthController : ControllerBase
         }
 
         string token = CreateToken(user);
-
+        HttpContext.Response.Cookies.Append("ba_session", token, new CookieOptions
+        {
+            Expires = DateTime.Now.AddDays(1),
+            Secure = true,
+            HttpOnly = true,
+            IsEssential = true,
+            SameSite = SameSiteMode.Lax
+        });
         return Ok(token);
     }
 
