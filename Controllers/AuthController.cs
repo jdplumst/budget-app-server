@@ -20,6 +20,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("signup")]
+    [Produces("application/json")]
     public ActionResult<String> Signup(UserDto userDto)
     {
         if (String.IsNullOrWhiteSpace(userDto.Username))
@@ -58,8 +59,18 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [Produces("application/json")]
     public ActionResult<String> Login(UserDto userDto)
     {
+        if (String.IsNullOrWhiteSpace(userDto.Username))
+        {
+            return BadRequest("Must enter a username");
+        }
+        if (String.IsNullOrWhiteSpace(userDto.Password))
+        {
+            return BadRequest("Must enter a password");
+        }
+
         var user = context.Users.Where(u => u.Username == userDto.Username).FirstOrDefault();
         if (user == null)
         {
