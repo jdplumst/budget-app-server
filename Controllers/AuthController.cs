@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("signup")]
     [Produces("application/json")]
-    public ActionResult<String> Signup(UserDto userDto)
+    public ActionResult Signup(UserDto userDto)
     {
         if (String.IsNullOrWhiteSpace(userDto.Username))
         {
@@ -60,18 +60,18 @@ public class AuthController : ControllerBase
         {
             Expires = DateTime.Now.AddDays(1),
             Secure = true,
-            HttpOnly = false,
+            HttpOnly = true,
             IsEssential = true,
             SameSite = SameSiteMode.None,
             Domain = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "development"
                 ? null : Environment.GetEnvironmentVariable("DOMAIN")
         });
-        return Ok(token);
+        return Ok();
     }
 
     [HttpPost("login")]
     [Produces("application/json")]
-    public ActionResult<String> Login(UserDto userDto)
+    public ActionResult Login(UserDto userDto)
     {
         if (String.IsNullOrWhiteSpace(userDto.Username))
         {
@@ -98,13 +98,13 @@ public class AuthController : ControllerBase
         {
             Expires = DateTime.Now.AddDays(1),
             Secure = true,
-            HttpOnly = false,
+            HttpOnly = true,
             IsEssential = true,
             SameSite = SameSiteMode.None,
             Domain = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "development"
                 ? null : Environment.GetEnvironmentVariable("DOMAIN")
         });
-        return Ok(token);
+        return Ok();
     }
 
     private static string CreateToken(User user)
