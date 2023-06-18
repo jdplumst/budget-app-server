@@ -60,7 +60,7 @@ public class AuthController : ControllerBase
         {
             Expires = DateTime.Now.AddDays(1),
             Secure = true,
-            HttpOnly = true,
+            HttpOnly = false,
             IsEssential = true,
             SameSite = SameSiteMode.None,
             Domain = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "development"
@@ -98,7 +98,7 @@ public class AuthController : ControllerBase
         {
             Expires = DateTime.Now.AddDays(1),
             Secure = true,
-            HttpOnly = true,
+            HttpOnly = false,
             IsEssential = true,
             SameSite = SameSiteMode.None,
             Domain = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "development"
