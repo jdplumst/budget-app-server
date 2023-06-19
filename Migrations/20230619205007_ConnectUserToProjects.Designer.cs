@@ -2,6 +2,7 @@
 using BudgetApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace budget_app_server.Migrations
 {
     [DbContext(typeof(BudgetAppContext))]
-    partial class BudgetAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230619205007_ConnectUserToProjects")]
+    partial class ConnectUserToProjects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,11 +69,13 @@ namespace budget_app_server.Migrations
 
             modelBuilder.Entity("BudgetApp.Models.Project", b =>
                 {
-                    b.HasOne("BudgetApp.Models.User", null)
+                    b.HasOne("BudgetApp.Models.User", "User")
                         .WithMany("Projects")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BudgetApp.Models.User", b =>

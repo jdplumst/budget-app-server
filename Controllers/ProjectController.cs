@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace budget_app_server.Controllers;
 
@@ -22,7 +23,10 @@ public class ProjectController : ControllerBase
     [HttpGet]
     public ActionResult<List<Project>> GetAll()
     {
-        return context.Projects.ToList(); ;
+        // var user = User.Identity?.Name;
+        int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        // int id = Convert.ToInt32(HttpContext.User.FindFirstValue("userID"));
+        return context.Projects.Where(p => p.UserId == userId).ToList();
     }
 
     [HttpGet("{id}")]
