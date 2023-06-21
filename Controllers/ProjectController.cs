@@ -30,7 +30,7 @@ public class ProjectController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Project> GetById(int id)
+    public ActionResult<Project> Get(int id)
     {
         var project = context.Projects.Find(id);
         if (project == null)
@@ -38,5 +38,19 @@ public class ProjectController : ControllerBase
             return NotFound();
         }
         return project;
+    }
+
+    [HttpPost]
+    public IActionResult Create(Project project)
+    {
+        if (string.IsNullOrWhiteSpace(project.Name))
+        {
+            return BadRequest("Project Name bust be non-empty");
+        }
+        int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        project.UserId = userId;
+        context.Projects.Add(project);
+        context.SaveChanges();
+        return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
     }
 }
