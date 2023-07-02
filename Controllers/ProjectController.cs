@@ -59,7 +59,7 @@ public class ProjectController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(project.Name))
         {
-            return BadRequest("Project Name bust be non-empty");
+            return BadRequest("Project Name must be non-empty");
         }
         int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
         var existing = context.Projects.Find(project.Id);
