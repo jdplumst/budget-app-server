@@ -53,4 +53,26 @@ public class ProjectController : ControllerBase
         context.SaveChanges();
         return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
     }
+
+    [HttpPut]
+    public IActionResult Update(Project project)
+    {
+        if (string.IsNullOrWhiteSpace(project.Name))
+        {
+            return BadRequest("Project Name bust be non-empty");
+        }
+        int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var existing = context.Projects.Find(project.Id);
+        if (existing == null)
+        {
+            return NotFound("Project not found");
+        }
+        if (existing.UserId != userId)
+        {
+            return Unauthorized("You are not authorized to update this project");
+        }
+        existing.Name = project.Name;
+        context.SaveChanges();
+        return Ok(existing);
+    }
 }
