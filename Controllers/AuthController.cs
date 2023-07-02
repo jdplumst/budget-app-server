@@ -103,6 +103,21 @@ public class AuthController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("logout")]
+    [Produces("application/json")]
+    public ActionResult Logout()
+    {
+        HttpContext.Response.Cookies.Append("ba_session", "null", new CookieOptions
+        {
+            Expires = DateTime.Now.AddDays(-1),
+            Secure = true,
+            HttpOnly = true,
+            IsEssential = true,
+            SameSite = SameSiteMode.None,
+        });
+        return Ok();
+    }
+
     private static string CreateToken(User user)
     {
         List<Claim> claims = new List<Claim>
