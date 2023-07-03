@@ -54,15 +54,15 @@ public class ProjectController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
     }
 
-    [HttpPut]
-    public IActionResult Update(Project project)
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, Project project)
     {
         if (string.IsNullOrWhiteSpace(project.Name))
         {
             return BadRequest("Project Name must be non-empty");
         }
         int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var existing = context.Projects.Find(project.Id);
+        var existing = context.Projects.Find(id);
         if (existing == null)
         {
             return NotFound("Project not found");
@@ -77,10 +77,10 @@ public class ProjectController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int Id)
+    public IActionResult Delete(int id)
     {
         int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var existing = context.Projects.Find(Id);
+        var existing = context.Projects.Find(id);
         if (existing == null)
         {
             return NotFound("Project not found");
