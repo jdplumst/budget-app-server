@@ -75,4 +75,22 @@ public class ProjectController : ControllerBase
         context.SaveChanges();
         return Ok(existing);
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int Id)
+    {
+        int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var existing = context.Projects.Find(Id);
+        if (existing == null)
+        {
+            return NotFound("Project not found");
+        }
+        if (existing.UserId != userId)
+        {
+            return Unauthorized("You are not authorized to update this project");
+        }
+        context.Projects.Remove(existing);
+        context.SaveChanges();
+        return Ok(existing);
+    }
 }
