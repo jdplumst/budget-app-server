@@ -47,6 +47,10 @@ public class ProjectController : ControllerBase
         {
             return BadRequest("Project Name bust be non-empty");
         }
+        if (project.Budget <= 0)
+        {
+            return BadRequest("Budget must be greater than $0");
+        }
         int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
         project.UserId = userId;
         context.Projects.Add(project);
@@ -61,6 +65,10 @@ public class ProjectController : ControllerBase
         {
             return BadRequest("Project Name must be non-empty");
         }
+        if (project.Budget <= 0)
+        {
+            return BadRequest("Budget must be greater than $0");
+        }
         int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
         var existing = context.Projects.Find(id);
         if (existing == null)
@@ -72,6 +80,7 @@ public class ProjectController : ControllerBase
             return Unauthorized("You are not authorized to update this project");
         }
         existing.Name = project.Name;
+        existing.Budget = project.Budget;
         context.SaveChanges();
         return Ok(existing);
     }
