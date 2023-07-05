@@ -65,6 +65,10 @@ public class ProjectController : ControllerBase
         {
             return BadRequest("Project Name must be non-empty");
         }
+        if (project.Name.Length > 30)
+        {
+            return BadRequest("Project Name must be 30 characters or less");
+        }
         if (project.Budget <= 0)
         {
             return BadRequest("Budget must be greater than $0");
