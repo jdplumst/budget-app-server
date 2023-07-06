@@ -7,6 +7,7 @@ namespace BudgetApp.Models
         public int Id { get; set; }
         public required string Username { get; set; }
         public required string PasswordHash { get; set; }
+        public Role Role { get; set; } = Role.User;
         public ICollection<Project> Projects { get; set; } = new List<Project>();
 
         [SetsRequiredMembers]
@@ -15,5 +16,12 @@ namespace BudgetApp.Models
             this.Username = username;
             this.PasswordHash = passwordHash;
         }
+    }
+
+    [Flags]
+    public enum Role
+    {
+        User = 0,
+        Premium = 1
     }
 }

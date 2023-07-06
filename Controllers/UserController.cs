@@ -19,7 +19,7 @@ public class UserController : ControllerBase
     public ActionResult<User> Get()
     {
         int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var user = context.Users.Where((u) => u.Id == userId).Select((u) => new { u.Username }).FirstOrDefault();
+        var user = context.Users.Where((u) => u.Id == userId).Select((u) => new { u.Username, u.Role }).FirstOrDefault();
         if (user == null)
         {
             return NotFound();
