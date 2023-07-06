@@ -45,7 +45,7 @@ public class ProjectController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(project.Name))
         {
-            return BadRequest("Project Name bust be non-empty");
+            return BadRequest("Project Name must be non-empty");
         }
         if (project.Name.Length > 30)
         {
