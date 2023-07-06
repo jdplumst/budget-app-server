@@ -123,7 +123,8 @@ public class AuthController : ControllerBase
         List<Claim> claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role.ToString())
             // new Claim("userID", user.Id.ToString())
         };
 

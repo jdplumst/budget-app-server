@@ -50,7 +50,7 @@ namespace budget_app_server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("BudgetApp.Models.User", b =>
@@ -74,7 +74,7 @@ namespace budget_app_server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("BudgetApp.Models.Project", b =>
