@@ -8,6 +8,8 @@ namespace BudgetApp.Models
         public int Id { get; set; }
         public required string Name { get; set; }
         public required decimal Budget { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime ModifyDate { get; set; }
         public int UserId { get; set; }
 
         [SetsRequiredMembers]

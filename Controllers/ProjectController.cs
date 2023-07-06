@@ -57,6 +57,8 @@ public class ProjectController : ControllerBase
         }
         int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
         project.UserId = userId;
+        project.CreateDate = DateTime.UtcNow;
+        project.ModifyDate = DateTime.UtcNow;
         context.Projects.Add(project);
         context.SaveChanges();
         return CreatedAtAction(nameof(Get), new { id = project.Id }, project);
@@ -89,6 +91,7 @@ public class ProjectController : ControllerBase
         }
         existing.Name = project.Name;
         existing.Budget = project.Budget;
+        existing.ModifyDate = DateTime.UtcNow;
         context.SaveChanges();
         return Ok(existing);
     }
