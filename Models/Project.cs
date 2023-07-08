@@ -11,6 +11,7 @@ namespace BudgetApp.Models
         public DateTime CreateDate { get; set; }
         public DateTime ModifyDate { get; set; }
         public int UserId { get; set; }
+        public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
         [SetsRequiredMembers]
         public Project(string Name, decimal Budget)
