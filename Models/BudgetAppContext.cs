@@ -8,5 +8,6 @@ namespace BudgetApp.Models
         { }
         public required DbSet<User> Users { get; set; }
         public required DbSet<Project> Projects { get; set; }
+        public required DbSet<Expense> Expenses { get; set; }
     }
 }
