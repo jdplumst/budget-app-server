@@ -32,10 +32,15 @@ public class ProjectController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Project> Get(int id)
     {
+        int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
         var project = context.Projects.Find(id);
         if (project == null)
         {
             return NotFound();
+        }
+        if (project.UserId != userId)
+        {
+            return Unauthorized("You are not authorized to see this project");
         }
         return project;
     }
