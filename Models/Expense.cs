@@ -19,7 +19,6 @@ namespace BudgetApp.Models
     }
   }
 
-  [Flags]
   public enum ExpenseType
   {
     Housing = 0,
