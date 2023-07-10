@@ -95,4 +95,23 @@ public class ExpenseController : ControllerBase
     context.SaveChanges();
     return CreatedAtAction(nameof(Get), new { id = expense.Id }, expense);
   }
+
+  [HttpDelete("{id}")]
+  public IActionResult Delete(int id)
+  {
+    int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+    var expense = context.Expenses.Find(id);
+    if (expense == null)
+    {
+      return NotFound("Expense does not exist");
+    }
+    var project = context.Projects.Where(p => p.Id == expense.ProjectId).First();
+    if (project.UserId != userId)
+    {
+      return Unauthorized("You are not authorized to delete this expense");
+    }
+    context.Expenses.Remove(expense);
+    context.SaveChanges();
+    return Ok(expense);
+  }
 }
