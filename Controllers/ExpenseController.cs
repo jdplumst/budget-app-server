@@ -19,10 +19,16 @@ public class ExpenseController : ControllerBase
   public IActionResult GetAll(int projectId = 0)
   {
     int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-    if (projectId == 0)
+    string userRole = User.FindFirstValue(ClaimTypes.Role)!;
+    Role role = (Role)Enum.Parse(typeof(Role), userRole);
+    if (projectId == 0 && !role.HasFlag(Role.Admin))
     {
       return BadRequest();
+    }
+    else if (projectId == 0)
+    {
+      var expenses = context.Expenses.ToList();
+      return Ok(expenses);
     }
     else
     {
