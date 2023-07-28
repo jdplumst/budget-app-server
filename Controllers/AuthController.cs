@@ -1,10 +1,9 @@
 using BudgetApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using System.IdentityModel.Tokens.Jwt;
-using System.Web;
+using System.Security.Claims;
+using System.Text;
 
 namespace budget_app_server.Controllers;
 
@@ -21,7 +20,6 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("signup")]
-    [Produces("application/json")]
     public ActionResult Signup(UserDto userDto)
     {
         if (String.IsNullOrWhiteSpace(userDto.Username))
@@ -68,7 +66,6 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    [Produces("application/json")]
     public ActionResult Login(UserDto userDto)
     {
         if (String.IsNullOrWhiteSpace(userDto.Username))
@@ -104,7 +101,6 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("logout")]
-    [Produces("application/json")]
     public ActionResult Logout()
     {
         HttpContext.Response.Cookies.Append("ba_session", "null", new CookieOptions
