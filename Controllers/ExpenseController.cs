@@ -1,7 +1,7 @@
-using System.Security.Claims;
 using BudgetApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace budget_app_server.Controllers;
 
@@ -106,6 +106,54 @@ public class ExpenseController : ControllerBase
         Console.WriteLine(expense);
         context.SaveChanges();
         return CreatedAtAction(nameof(Get), new { id = expense.Id }, expense);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, Expense expense)
+    {
+        if (string.IsNullOrWhiteSpace(expense.Name))
+        {
+            return BadRequest("Expense Name must be non-empty");
+        }
+        if (expense.Name.Length > 30)
+        {
+            return BadRequest("Expense Name must be 30 characters or less");
+        }
+        if (expense.Amount <= 0)
+        {
+            return BadRequest("Amount must be greater than $0");
+        }
+        var existing = context.Expenses.Find(id);
+        if (existing == null)
+        {
+            return NotFound("Expense not found");
+        }
+        int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var project = context.Projects.Find(existing.ProjectId);
+        if (project == null)
+        {
+            return BadRequest("Project does not exist");
+        }
+        if (project.UserId != userId)
+        {
+            return Unauthorized("You are not authorized to create this expense");
+        }
+        if (!Enum.IsDefined(typeof(ExpenseType), expense.Type))
+        {
+            return BadRequest("Must give a valid Expense Type");
+        }
+
+        var projectExpenses = context.Expenses.Where(e => e.ProjectId == project.Id && e.Id != id);
+        var totalExpense = projectExpenses.Sum(e => e.Amount) + expense.Amount;
+        if (project.Budget < totalExpense)
+        {
+            return BadRequest("Total expense amount cannot go over budget");
+        }
+        existing.Name = expense.Name;
+        existing.Amount = expense.Amount;
+        existing.Type = expense.Type;
+        context.SaveChanges();
+        return Ok(existing);
     }
 
     [HttpDelete("{id}")]
