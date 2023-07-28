@@ -26,4 +26,23 @@ public class UserController : ControllerBase
         }
         return Ok(user);
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var currUser = context.Users.Where(u => u.Id == userId).FirstOrDefault();
+        if (currUser == null || (userId != id && !currUser.Role.HasFlag(Role.Admin)))
+        {
+            return Unauthorized("You are not authorized to delete this user");
+        }
+        var user = context.Users.Where(u => u.Id == id).FirstOrDefault();
+        if (user == null)
+        {
+            return NotFound("User does not exist");
+        }
+        context.Users.Remove(user);
+        context.SaveChanges();
+        return Ok();
+    }
 }
