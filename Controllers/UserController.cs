@@ -22,7 +22,7 @@ public class UserController : ControllerBase
         var user = context.Users.Where((u) => u.Id == userId).Select((u) => new { u.Username, u.Role }).FirstOrDefault();
         if (user == null)
         {
-            return NotFound();
+            return NotFound("You are not logged in");
         }
         return Ok(user);
     }
