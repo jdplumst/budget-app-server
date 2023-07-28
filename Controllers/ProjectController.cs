@@ -1,9 +1,6 @@
 using BudgetApp.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace budget_app_server.Controllers;
@@ -36,7 +33,7 @@ public class ProjectController : ControllerBase
         var project = context.Projects.Find(id);
         if (project == null)
         {
-            return NotFound();
+            return NotFound($"Project {id} does not exist");
         }
         if (project.UserId != userId)
         {
