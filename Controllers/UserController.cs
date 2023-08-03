@@ -27,6 +27,25 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    [HttpPut]
+    public IActionResult Update()
+    {
+        int userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var user = context.Users.Where((u) => u.Id == userId).FirstOrDefault();
+        if (user == null)
+        {
+            return NotFound("You are not logged in");
+        }
+        if (user.Role.HasFlag(Role.Premium))
+        {
+            return BadRequest("You are already a Premium user");
+        }
+        user.Role |= Role.Premium;
+        context.SaveChanges();
+        return Ok(user);
+    }
+
+
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
