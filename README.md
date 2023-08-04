@@ -6,6 +6,8 @@ This is a Budget App where users can track and calculate their budgets and expen
 
 This repository contains the backend code for the app. The frontend code can be found [here](https://github.com/jdplumst/budget-app).
 
+Favicon retrieved from [icons8](https://icons8.com/icon/set/money-transfer/color).
+
 ## Built With
 
 - ASP.NET
