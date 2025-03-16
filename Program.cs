@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -19,30 +20,37 @@ builder.Services.AddCors();
 
 DotNetEnv.Env.Load();
 
-builder.Services.AddDbContext<BudgetAppContext>(options =>
-    options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL")));
+builder.Services.AddDbContext<BudgetAppContext>(
+    options => options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"))
+);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer((o) =>
-{
-    o.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuers = Environment.GetEnvironmentVariable("ISSUERS")!.Split(" "),
-        ValidAudiences = Environment.GetEnvironmentVariable("AUDIENCE")!.Split(" "),
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!))
-    };
-    o.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(
+        (o) =>
         {
-            context.Token = context.Request.Cookies["ba_session"];
-            return Task.CompletedTask;
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuers = Environment.GetEnvironmentVariable("ISSUERS")!.Split(" "),
+                ValidAudiences = Environment.GetEnvironmentVariable("AUDIENCE")!.Split(" "),
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!)
+                )
+            };
+            o.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    context.Token = context.Request.Cookies["ba_session"];
+                    return Task.CompletedTask;
+                }
+            };
         }
-    };
-});
+    );
 
 var app = builder.Build();
 
@@ -53,8 +61,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors((o) => o.WithOrigins(Environment.GetEnvironmentVariable("CORS")!.Split(" "))
-    .AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+app.UseCors(
+    (o) =>
+        o.WithOrigins(Environment.GetEnvironmentVariable("CORS")!.Split(" "))
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+);
 
 app.UseHttpsRedirection();
 
